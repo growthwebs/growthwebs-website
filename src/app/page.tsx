@@ -2,22 +2,18 @@ import Image from 'next/image'
 import { client } from '@/lib/sanity.client'
 import { groq } from 'next-sanity'
 
-// This is a GROQ query. It's how we ask for content from Sanity.
 const query = groq`*[_type == "homepage"][0]{
   title,
   tagline
 }`
 
-// This interface defines the shape of the data we expect to receive.
 interface HomepageData {
   title: string;
   tagline: string;
 }
 
-// The 'async' keyword allows us to use 'await' to fetch data.
 export default async function Home() {
-  // Fetch the data from Sanity
-  const data: HomepageData = await client.fetch(query)
+  const data: HomepageData | null = await client.fetch(query)
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
@@ -31,14 +27,23 @@ export default async function Home() {
           priority
         />
         
-        {/* We are replacing the original <ol> with our dynamic content */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
-            {data.title}
-          </h1>
-          <p className="mt-4 text-lg text-gray-500">
-            {data.tagline}
-          </p>
+          {/* This is the fix: We check if data exists before trying to display it. */}
+          {data ? (
+            <>
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+                {data.title}
+              </h1>
+              <p className="mt-4 text-lg text-gray-500">
+                {data.tagline}
+              </p>
+            </>
+          ) : (
+            // If no data is found, we show a helpful message.
+            <p className="text-lg text-red-500">
+              No homepage content found. Please publish it in the Sanity Studio.
+            </p>
+          )}
         </div>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
