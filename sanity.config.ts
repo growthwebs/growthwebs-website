@@ -1,7 +1,6 @@
 import {defineConfig} from 'sanity'
 import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
-// Import the schema types from our new index file using a simple relative path
 import {schemaTypes} from './schemas'
 
 export default defineConfig({
