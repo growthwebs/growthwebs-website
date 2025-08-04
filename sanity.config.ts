@@ -1,18 +1,20 @@
 import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
+import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
-// Use the robust path alias to ensure this root file finds the schema correctly.
-import {schema} from '@/sanity/schemas/schema'
+// Import the schema types from our new index file using a simple relative path
+import {schemaTypes} from './schemas'
 
 export default defineConfig({
+  basePath: '/studio',
   name: 'default',
   title: 'Growthwebs Studio',
 
   projectId: 'y22jq1vg',
   dataset: 'production',
 
-  // Tell the studio to use our new schema
-  schema,
+  plugins: [deskTool(), visionTool()],
 
-  plugins: [structureTool(), visionTool()],
+  schema: {
+    types: schemaTypes,
+  },
 })
